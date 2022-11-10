@@ -1,0 +1,40 @@
+function plotEgg(f)
+    a = f.UserData.a;
+    b = f.UserData.b;
+    g = f.UserData.g;
+    psi = f.UserData.psi;
+    alpha = pi/2-psi;
+    beta = acos(cos(g)/cos(alpha));
+    ha = a*cos(alpha);
+    hb = b*cos(beta);
+    H = ha+hb;
+    S = a*sin(alpha); 
+    L = b*sin(beta);
+    Xs = [S S S 0 0 0 2*S 2*S 2*S];
+    Ys = [2*L+V L+V V 2*L L 0 2*L L 0];
+    Zs = [0 H 0 0 H 0 0 H 0];
+    quadInds = [6 4 1 3;
+        3 1 7 9;
+        4 5 2 1;
+        1 2 5 7];
+    for i = 1:4
+        h = f.Children(length(f.Children)).Children(i);
+        h.XData = Xs(quadInds(i,:));
+        h.YData = Ys(quadInds(i,:));
+        h.ZData = Zs(quadInds(i,:));
+    end
+    axes(f.Children(length(f.Children)));
+    title(sprintf('a: %0.2f, b: %0.2f, $\\gamma$: %0.1f$^\\circ$, $\\theta$: %0.1f$^\\circ$',...
+        a,b,rad2deg(g),rad2deg(theta)),'Interpreter','latex');
+    xlim([0,2*b*sin(g)]);
+    ylim([0,max(2*a+b*cos(g),b+2*a*cos(g))]);
+    zlim([0,a*sin(g)]);
+
+    psis = linspace(0,g,101);
+    thetas = asin(sin(psis)./sin(g));
+    Ss = b*cos(thetas)*tan(g)./sqrt(1+cos(thetas).^2*tan(g)^2);
+    axes(f.Children(length(f.Children)));
+    hplot = f.Children(length(f.Children)-1).Children(1);
+    hplot.XData = rad2deg(psis);
+    hplot.YData = Ss;
+end
