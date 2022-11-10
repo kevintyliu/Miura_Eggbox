@@ -1,7 +1,7 @@
 %% Input Parameters
-% close all
-% clear
-% clc
+close all
+clear
+clc
 
 % assume 1 plane of symmetry for now
 % as between eggbox and Miura match
