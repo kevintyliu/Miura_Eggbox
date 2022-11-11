@@ -1,5 +1,5 @@
 function plotMiuraEgg(f)
-n = 301;
+nplot = 301;
 a = f.UserData.a;
 bm = f.UserData.bm;
 be = f.UserData.be;
@@ -8,42 +8,18 @@ ge = f.UserData.ge;
 psi = f.UserData.psi;
 
 % Miura calculations
-thetam = asin(sin(psi)/sin(gm));
-Hm = a*sin(thetam)*sin(gm);
-Sm = bm*cos(thetam)*tan(gm)/sqrt(1+cos(thetam)^2*tan(gm)^2);
-Lm = a*sqrt(1-sin(thetam)^2*sin(gm)^2);
-Vm = Sm/(tan(gm)*cos(thetam));
-
-Xms = [Sm Sm Sm 0 0 0 2*Sm 2*Sm 2*Sm];
-Yms = [2*Lm+Vm Lm+Vm Vm 2*Lm Lm 0 2*Lm Lm 0];
-Zms = [0 Hm 0 0 Hm 0 0 Hm 0];
-mInds = [6 3 2 5;
-    5 2 1 4;
-    3 9 8 2;
-    1 2 8 7];
+[Xms, Yms, Zms, mInds, Sm, ~] = getMiuraCoords(a,bm,gm,psi);
 
 % Eggbox calculations
-alphae = pi/2-psi;
-betae = acos(cos(ge)/cos(alphae));
-hae = a*cos(alphae);
-hbe = be*cos(betae);
-He = hae+hbe;
-Se = be*sqrt(1-cos(ge)^2/cos(alphae)^2);    % instead of B
-Le = a*sin(alphae);                       % instead of W
-
-Xes = [Se 2*Se 0 Se 2*Se 0 Se 2*Se 0] + 2*Sm;
-Yes = [Le Le Le 0 0 0 2*Le 2*Le 2*Le];
-Zes = [He hae hae hbe 0 0 hbe 0 0];
-eInds = [6 4 1 3;
-    3 1 7 9;
-    4 5 2 1;
-    1 2 8 7] + 9;
+[Xes, Yes, Zes, eInds, Se, ~] = getEggboxCoords(a,be,ge,psi);
+Xes  = Xes + 2*Sm;
+eInds = eInds + 9;
 
 Ssum = Sm + Se;
 % Plot
-Xs = [Xms Xes];
-Ys = [Yms Yes];
-Zs = [Zms Zes];
+Xs = [Xms; Xes];
+Ys = [Yms; Yes];
+Zs = [Zms; Zes];
 quadInds = [mInds; eInds];
 for i = 1:size(quadInds,1)
     h = f.Children(length(f.Children)).Children(i);
@@ -58,17 +34,14 @@ xlim([0,2*bm*sin(gm)+2*be*sin(ge)]);
 ylim([0,max([2*a+bm*cos(gm) bm+2*a*cos(gm) 2*a*sin(ge)])]);
 zlim([0,max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)])]);
 
-psims = linspace(0,gm,n);
-thetams = asin(sin(psims)./sin(gm));
-Sms = bm*cos(thetams)*tan(gm)./sqrt(1+cos(thetams).^2*tan(gm)^2);
-% Sms2 = bm*sqrt(sin(gm).^2-sin(psims).^2)./cos(psims);
-% max(Sms2-Sms)
-psies = linspace(pi/2-ge,pi/2,n);
+psims = linspace(0,gm,nplot);
+Sms = bm*sqrt(sin(gm).^2-sin(psims).^2)./cos(psims);
+psies = linspace(pi/2-ge,pi/2,nplot);
 alphaes = pi/2-psies;
 Ses = be*sqrt(1-cos(ge)^2./cos(alphaes).^2);
 % Ses2 = be*sqrt(1-0.99999999*cos(ge)^2./sin(psies).^2);
 % max(Ses2-Ses)
-psiSums = linspace(pi/2-ge,gm,n);
+psiSums = linspace(pi/2-ge,gm,nplot);
 thetaSums = asin(sin(psiSums)./sin(gm));
 SSumsms = bm*cos(thetaSums)*tan(gm)./sqrt(1+cos(thetaSums).^2*tan(gm)^2);
 alphaSums = pi/2-psiSums;
@@ -89,16 +62,12 @@ hSPlotSum = SvPsiAxes.Children(2);
 hSPlotSum.XData = rad2deg(psiSums);
 hSPlotSum.YData = SHs;
 
-num = -cot(gm)^2/cos(thetam)^2;
-nue = cos(ge)^2*tan(alphae)^2/(cos(alphae)^2 - cos(ge)^2);
+num = -cos(gm).^2./(sin(gm).^2-sin(psi).^2);
+nue = cos(ge)^2*cot(psi).^2./(sin(psi).^2 - cos(ge)^2);
 nuH = Sm/Ssum*num + Se/Ssum*nue;
 
-nums = -cot(gm)^2./cos(thetams).^2;
-% nums2 = -cos(gm).^2./(sin(gm).^2-sin(psims).^2);
-% max(nums2-nums)
-nues = cos(ge)^2*tan(alphaes).^2./(cos(alphaes).^2 - cos(ge)^2);
-% nues2 = cos(ge)^2*cot(psies).^2./(sin(psies).^2 - cos(ge)^2);
-% max(nues2-nues)
+nums = -cos(gm).^2./(sin(gm).^2-sin(psims).^2);
+nues = cos(ge)^2*cot(psies).^2./(sin(psies).^2 - cos(ge)^2);
 nuSumsms = -cot(gm).^2./cos(thetaSums).^2;
 nuSumses = cos(ge)^2*tan(alphaSums).^2./(cos(alphaSums).^2 - cos(ge)^2);
 nuHs = SSumsms./(SSumsms+SSumes).*nuSumsms + SSumes./(SSumsms+SSumes).*nuSumses;
