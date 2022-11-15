@@ -63,11 +63,11 @@ hSPlotSum.XData = rad2deg(psiSums);
 hSPlotSum.YData = SHs;
 
 num = -cos(gm).^2./(sin(gm).^2-sin(psi).^2);
-nue = cos(ge)^2*cot(psi).^2./(sin(psi).^2 - cos(ge)^2);
+nue = cos(ge)^2*cot(psi).^2./abs(sin(psi).^2 - cos(ge)^2);
 nuH = Sm/Ssum*num + Se/Ssum*nue;
 
 nums = -cos(gm).^2./(sin(gm).^2-sin(psims).^2);
-nues = cos(ge)^2*cot(psies).^2./(sin(psies).^2 - cos(ge)^2);
+nues = cos(ge)^2*cot(psies).^2./abs(sin(psies).^2 - cos(ge)^2);
 nuSumsms = -cot(gm).^2./cos(thetaSums).^2;
 nuSumses = cos(ge)^2*tan(alphaSums).^2./(cos(alphaSums).^2 - cos(ge)^2);
 nuHs = SSumsms./(SSumsms+SSumes).*nuSumsms + SSumes./(SSumsms+SSumes).*nuSumses;

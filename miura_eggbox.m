@@ -17,7 +17,8 @@ params.psi = deg2rad(40);
 % params.psi = deg2rad(23.24);
 params.MaxInterShift = 0; % TODO: Delete
 %% Create GUI
-f = initGui(1,2);
+f = initVisual(1,2);
+initMiuraEggTabs(f)
 f.UserData = params;
 plotMiuraEgg(f);
 makeSlider(f.UserData.a,0,3,0.1,0.22,0.8,'a','0','3',@changeA);

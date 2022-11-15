@@ -1,4 +1,4 @@
-T = 30;
+T = 10;
 tFrame = 0.2;
 mergedobj = VideoWriter('compositevid','Motion JPEG AVI');
 mergedobj.FrameRate = 1/tFrame; 

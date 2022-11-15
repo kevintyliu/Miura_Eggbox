@@ -10,6 +10,7 @@ psi = f.UserData.psi;
 psimin = f.UserData.psimin;
 psimax = f.UserData.psimax;
 
+Ss = zeros(1,n);
 Xs = zeros(3*m*3*n,1);
 Ys = zeros(3*m*3*n,1);
 Zs = zeros(3*m*3*n,1);
@@ -32,6 +33,7 @@ for j = 1:n % cols
         Zs((j-1)*9*m+9*i-8:(j-1)*9*m+9*i) = Zjs;
         quadInds(4*((j-1)*m+i)-3:4*((j-1)*m+i),:) = jInds + 9*((j-1)*m+i-1);
     end
+    Ss(j) = Sj;
 end
 
 % Plot
@@ -68,68 +70,36 @@ zlim([0,a*sin(psimax)+max([0 bs(~miura_bools)])]);
 % SSumes = be*sqrt(1-cos(ge)^2./cos(alphaSums).^2);
 % SHs = SSumsms+SSumes;
 
-% S vs. psi
+% Save vs psi plot
 SvPsiTab = f.Children(length(f.Children)-1).Children(1);
-SvPsiAxes = SvPsiTab.Children(2);
-hSLinem = SvPsiAxes.Children(1);
-hSLinem.Value = rad2deg(psi);
-% hSPlotm = SvPsiAxes.Children(4);
-% hSPlotm.XData = rad2deg(psims);
-% hSPlotm.YData = Stots;
-% hSPlote = SvPsiAxes.Children(3);
-% hSPlote.XData = rad2deg(psies);
-% hSPlote.YData = Ses;
+SvPsiAxes = SvPsiTab.Children;
+hSvPsiscatter = SvPsiAxes.Children(1);
+hSvPsiscatter.XData = rad2deg(psi);
+hSvPsiscatter.YData = sum(Ss)/n;
 hSPlotSum = SvPsiAxes.Children(2);
 hSPlotSum.XData = rad2deg(psis);
-hSPlotSum.YData = Stots;
-
-% num = -cos(gm).^2./(sin(gm).^2-sin(psi).^2);
-% nue = cos(ge)^2*cot(psi).^2./(sin(psi).^2 - cos(ge)^2);
-% nuH = Sm/Ssum*num + Se/Ssum*nue;
-%
-% nums = -cos(gm).^2./(sin(gm).^2-sin(psims).^2);
-% nues = cos(ge)^2*cot(psies).^2./(sin(psies).^2 - cos(ge)^2);
-% nuSumsms = -cot(gm).^2./cos(thetaSums).^2;
-% nuSumses = cos(ge)^2*tan(alphaSums).^2./(cos(alphaSums).^2 - cos(ge)^2);
-% nuHs = SSumsms./(SSumsms+SSumes).*nuSumsms + SSumes./(SSumsms+SSumes).*nuSumses;
-% % nu vs. psi
-% NuvPsiTab = f.Children(length(f.Children)-1).Children(2);
-% NuvPsiAxes = NuvPsiTab.Children(2);
-% hNuPsiLinem = NuvPsiAxes.Children(1);
-% hNuPsiLinem.Value = rad2deg(psi);
-% hNuPlotm = NuvPsiAxes.Children(4);
-% hNuPlotm.XData = rad2deg(psims);
-% hNuPlotm.YData = nums;
-% hNuPlote = NuvPsiAxes.Children(3);
-% hNuPlote.XData = rad2deg(psies);
-% hNuPlote.YData = nues;
-% hNuPlotSum = NuvPsiAxes.Children(2);
-% hNuPlotSum.XData = rad2deg(psiSums);
-% hNuPlotSum.YData = nuHs;
-%
-% % nu vs. S
-% NuvSTab = f.Children(length(f.Children)-1).Children(3);
-% NuvSAxes = NuvSTab.Children(1);
-% hNuSDotm = NuvSAxes.Children(1);
-% hNuSDotm.XData = Ssum;
-% hNuSDotm.YData = nuH;
-% hNuPlotSum = NuvSAxes.Children(2);
-% hNuPlotSum.XData = SHs;
-% hNuPlotSum.YData = nuHs;
-%
-% % Sh vs. S
-% SvsSmTab = f.Children(length(f.Children)-1).Children(4);
-% SvSmAxes = SvsSmTab.Children(1);
-% SvSmDotm = SvSmAxes.Children(1);
-% SvSmDotm.XData = Sm/max(SHs);
-% SvSmDotm.YData = Ssum/max(SHs);
-% hSvSmPlotSum = SvSmAxes.Children(2);
-% hSvSmPlotSum.XData = SSumsms/max(SHs);
-% hSvSmPlotSum.YData = SHs/max(SHs);
-% ifirst = find(hSvSmPlotSum.YData>0.95,1);
-% iend = find(hSvSmPlotSum.YData>0.95,1,'last');
-% interShift = hSvSmPlotSum.XData(ifirst) - hSvSmPlotSum.XData(iend);
-% if f.UserData.MaxInterShift < interShift
-%     f.UserData.MaxInterShift = interShift;
-%     fprintf('Intershift: %0.1f%%, a: %0.2f, bm: %0.2f, be: %0.2f, gm: %0.2f deg, ge: %0.2f deg\n', interShift*100, a, bm, be, rad2deg(gm), rad2deg(ge));
-% end
+hSPlotSum.YData = Stots/n;
+% nu vs. psi plot
+num = -cos(gs).^2./(sin(gs).^2-sin(psi).^2); % nu if Miura given psi
+nue = cos(gs).^2*cot(psi').^2./abs(sin(psi').^2 - cos(gs).^2); % nu if Eggbox given psi
+nu = 1/sum(Ss)*sum([Ss(miura_bools).*num(miura_bools) Ss(~miura_bools).*nue(~miura_bools)]);
+nums = -cos(gs).^2./(sin(gs).^2-sin(psis').^2); % nu if Miura
+nues = cos(gs).^2.*cot(psis').^2./abs(sin(psis').^2 - cos(gs).^2); % nu if Eggbox
+nus = 1./Stots.*sum([Sms(:,miura_bools).*nums(:,miura_bools)  Ses(:,~miura_bools).*nues(:,~miura_bools)],2);
+NuvPsiTab = f.Children(length(f.Children)-1).Children(2);
+NuvPsiAxes = NuvPsiTab.Children;
+hNuPsiScatter = NuvPsiAxes.Children(1);
+hNuPsiScatter.XData = rad2deg(psi);
+hNuPsiScatter.YData = nu;
+hNuPlotm = NuvPsiAxes.Children(2);
+hNuPlotm.XData = rad2deg(psis);
+hNuPlotm.YData = nus;
+% nu vs. Save
+NuvSTab = f.Children(length(f.Children)-1).Children(3);
+NuvSAxes = NuvSTab.Children;
+hNuSDotm = NuvSAxes.Children(1);
+hNuSDotm.XData = sum(Ss)/n;
+hNuSDotm.YData = nu;
+hNuPlotSum = NuvSAxes.Children(2);
+hNuPlotSum.XData = Stots/n;
+hNuPlotSum.YData = nus;
