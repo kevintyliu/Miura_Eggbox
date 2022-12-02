@@ -4,11 +4,11 @@ tabgp = uitabgroup(f,'Position',[0.6 0.4 0.3 0.55]);
 tab1 = uitab(tabgp,'Title',['S vs.' char(968)]);
 tab1.BackgroundColor = 'w';
 axes('Parent',tab1);
-plot(1,1,'DisplayName','Miura');
+plot(1,1,'DisplayName','Miura','LineWidth',3);
 hold on
-plot(1,1,'DisplayName','Eggbox');
-plot(1,1,'DisplayName','S_h = Sum');
-xline(1,'DisplayName','\psi');
+plot(1,1,'DisplayName','Eggbox','LineWidth',3);
+plot(1,1,'DisplayName','S_h = Sum','LineWidth',3);
+xline(1,'DisplayName','\psi','LineWidth',3);
 legend
 grid on
 xlim([0 90]);
@@ -22,10 +22,10 @@ set(gca,'FontSize',18)
 tab2 = uitab(tabgp,'Title',[char(957) ' vs. ' char(968)]);
 tab2.BackgroundColor = 'w';
 axes('Parent',tab2);
-plot(1,1,'DisplayName','Miura');
+plot(1,1,'DisplayName','Miura','LineWidth',3);
 hold on
-plot(1,1,'DisplayName','Eggbox');
-plot(1,1,'DisplayName','Hybrid');
+plot(1,1,'DisplayName','Eggbox','LineWidth',3);
+plot(1,1,'DisplayName','Hybrid','LineWidth',3);
 xline(1,'DisplayName','\psi');
 legend
 grid on
@@ -40,7 +40,7 @@ set(gca,'FontSize',18)
 tab3 = uitab(tabgp,'Title',[char(957) ' vs. S']);
 tab3.BackgroundColor = 'w';
 axes('Parent',tab3);
-plot(1,1);
+plot(1,1,'LineWidth',3);
 hold on;
 scatter(1,1);
 grid on
@@ -55,9 +55,9 @@ set(gca,'FontSize',18)
 tab4 = uitab(tabgp,'Title',['S vs. Sm']);
 tab4.BackgroundColor = 'w';
 axes('Parent',tab4);
-plot(1,1);
+plot(1,1,'LineWidth',3);
 hold on;
-scatter(1,1);
+scatter(1,1,'LineWidth',3);
 grid on
 xlim([0 1]);
 ylim([0 1]);

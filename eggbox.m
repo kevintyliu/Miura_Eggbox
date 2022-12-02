@@ -8,7 +8,8 @@
 eggParams.a = 1;
 eggParams.b = 1;
 eggParams.g = deg2rad(60);
-eggParams.psi = pi/2-eggParams.g;
+eggParams.psi = deg2rad(45);
+% eggParams.psi = pi/2-eggParams.g;
 %% Create GUI
 f = initVisual(1,2);
 initSingleUnitTabs(f);

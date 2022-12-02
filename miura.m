@@ -3,11 +3,11 @@
 % clear
 % clc
 
-miuraParams.a = cosd(40)/cosd(60);
+miuraParams.a = 1;
 miuraParams.b = 1;
 miuraParams.g = deg2rad(60);
 % miuraParams.psi = deg2rad(10);
-theta = deg2rad(61.03);
+theta = deg2rad(45);
 miuraParams.psi = acos(sqrt(1-sin(miuraParams.g)^2*sin(theta)^2));
 %% Create GUI
 f = initVisual(1,2);
