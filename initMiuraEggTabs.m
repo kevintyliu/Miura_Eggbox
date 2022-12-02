@@ -66,4 +66,23 @@ ylim manual
 xlabel('S_m / max( S_h )');
 ylabel('S_h / max( S_h )');
 set(gca,'FontSize',18)
+
+% L vs. S plot
+tab5 = uitab(tabgp,'Title',['L vs. Save']);
+tab5.BackgroundColor = 'w';
+axes('Parent',tab5);
+fill(1,1,'b','DisplayName','Miura','FaceAlpha',0.3,'EdgeColor','none');
+hold on;
+fill(1,1,'r','DisplayName','Eggbox','FaceAlpha',0.3,'EdgeColor','none');
+plot(1,1,'y','DisplayName','Hybrid');
+scatter(1,1,'DisplayName','Current');
+grid on
+xlim([0 1]);
+ylim([0 1]);
+xlim manual
+ylim manual
+xlabel('S_h/2');
+ylabel('L');
+legend
+set(gca,'FontSize',18)
 end

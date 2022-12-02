@@ -8,7 +8,7 @@ ge = f.UserData.ge;
 psi = f.UserData.psi;
 
 % Miura calculations
-[Xms, Yms, Zms, mInds, Sm, ~] = getMiuraCoords(a,bm,gm,psi);
+[Xms, Yms, Zms, mInds, Sm, L] = getMiuraCoords(a,bm,gm,psi);
 
 % Eggbox calculations
 [Xes, Yes, Zes, eInds, Se, ~] = getEggboxCoords(a,be,ge,psi);
@@ -42,6 +42,7 @@ Ses = be*sqrt(1-cos(ge)^2./cos(alphaes).^2);
 % Ses2 = be*sqrt(1-0.99999999*cos(ge)^2./sin(psies).^2);
 % max(Ses2-Ses)
 psiSums = linspace(pi/2-ge,gm,nplot);
+Ls = a*sin(pi/2-psiSums);
 thetaSums = asin(sin(psiSums)./sin(gm));
 SSumsms = bm*cos(thetaSums)*tan(gm)./sqrt(1+cos(thetaSums).^2*tan(gm)^2);
 alphaSums = pi/2-psiSums;
@@ -112,3 +113,19 @@ if f.UserData.MaxInterShift < interShift
     f.UserData.MaxInterShift = interShift;
     fprintf('Intershift: %0.1f%%, a: %0.2f, bm: %0.2f, be: %0.2f, gm: %0.2f deg, ge: %0.2f deg\n', interShift*100, a, bm, be, rad2deg(gm), rad2deg(ge));
 end
+
+% Sh vs. S
+LvsSTab = f.Children(length(f.Children)-1).Children(5);
+LvsSAxes = LvsSTab.Children(2);
+LvsSDot = LvsSAxes.Children(1);
+LvsSDot.XData = Ssum/2;
+LvsSDot.YData = L;
+LvsSPlot = LvsSAxes.Children(2);
+LvsSPlot.XData = SHs/2;
+LvsSPlot.YData = Ls;
+LvsSfillm = LvsSAxes.Children(4);
+LvsSfillm.XData = [SSumsms/2 0];
+LvsSfillm.YData = [Ls Ls(1)];
+LvsSfille = LvsSAxes.Children(3);
+LvsSfille.XData = [SSumsms/2 fliplr(SHs)/2];
+LvsSfille.YData = [Ls fliplr(Ls)];

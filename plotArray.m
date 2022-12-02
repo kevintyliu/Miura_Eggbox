@@ -36,14 +36,14 @@ for j = 1:n % cols
     Ss(j) = Sj;
 end
 
+axes(f.Children(length(f.Children)));
 % Plot
-for i = 1:size(quadInds,1)
-    h = f.Children(length(f.Children)).Children(i);
+for i = 1:4*m*n
+    h = f.Children(length(f.Children)).Children(end-4*m*n+i);
     h.XData = Xs(quadInds(i,:));
     h.YData = Ys(quadInds(i,:));
     h.ZData = Zs(quadInds(i,:));
 end
-axes(f.Children(length(f.Children)));
 tita = sprintf('$a$: %0.2f, $b$: [ ',a);
 titb = sprintf('%0.2g, ', bs);
 titb(end-1) = '';
@@ -58,11 +58,17 @@ Sms = bs.*sqrt(sin(gs).^2-sin(psis').^2)./cos(psis'); % Lengths if Miura
 alphas = pi/2-psis;
 Ses = real(bs.*sqrt(1-cos(gs).^2./cos(alphas').^2)); % Lengths if Eggbox
 Stots = sum([Sms(:,miura_bools) Ses(:,~miura_bools)],2);
+% if miura_bools(1)
+%     Ls = a*sqrt(1-sin(asin(sin(psis)/sin(gs(1)))).^2*sin(gs(1))^2);
+% else
+    Ls = a*sin(pi/2-psis);
+% end
 xlim([0,2*max(Stots)]);
 % Max width determined by Miura with highest V
 Vs = bs./sqrt(1+cos(asin(sin(psimin)./sin(gs))).^2.*tan(gs).^2);
 ylim([0,2*m*a*cos(psimin)+max([0 Vs(:,miura_bools)],[],'all')]);
-zlim([0,a*sin(psimax)+max([0 bs(~miura_bools)])]);
+currZLim = zlim;
+zlim( [0, max([a*sin(psimax)+max([0 bs(~miura_bools)]) currZLim(2)])] );
 % psiSums = linspace(pi/2-ge,gm,nplot);
 % thetaSums = asin(sin(psiSums)./sin(gm));
 % SSumsms = bm*cos(thetaSums)*tan(gm)./sqrt(1+cos(thetaSums).^2*tan(gm)^2);
@@ -87,19 +93,38 @@ nums = -cos(gs).^2./(sin(gs).^2-sin(psis').^2); % nu if Miura
 nues = cos(gs).^2.*cot(psis').^2./abs(sin(psis').^2 - cos(gs).^2); % nu if Eggbox
 nus = 1./Stots.*sum([Sms(:,miura_bools).*nums(:,miura_bools)  Ses(:,~miura_bools).*nues(:,~miura_bools)],2);
 NuvPsiTab = f.Children(length(f.Children)-1).Children(2);
-NuvPsiAxes = NuvPsiTab.Children;
+NuvPsiAxes = NuvPsiTab.Children(2);
 hNuPsiScatter = NuvPsiAxes.Children(1);
 hNuPsiScatter.XData = rad2deg(psi);
 hNuPsiScatter.YData = nu;
-hNuPlotm = NuvPsiAxes.Children(2);
+for i = 1:n
+    if miura_bools(i)
+        nutemp = nums(:,i);
+    else
+        nutemp = nues(:,i);
+    end
+    hNuPsiPlotTemp = NuvPsiAxes.Children(i+1);
+    hNuPsiPlotTemp.XData = rad2deg(psis);
+    hNuPsiPlotTemp.YData = nutemp;
+end
+hNuPlotm = NuvPsiAxes.Children(end);
 hNuPlotm.XData = rad2deg(psis);
 hNuPlotm.YData = nus;
 % nu vs. Save
 NuvSTab = f.Children(length(f.Children)-1).Children(3);
 NuvSAxes = NuvSTab.Children;
-hNuSDotm = NuvSAxes.Children(1);
-hNuSDotm.XData = sum(Ss)/n;
-hNuSDotm.YData = nu;
+hNuSDot = NuvSAxes.Children(1);
+hNuSDot.XData = sum(Ss)/n;
+hNuSDot.YData = nu;
 hNuPlotSum = NuvSAxes.Children(2);
 hNuPlotSum.XData = Stots/n;
 hNuPlotSum.YData = nus;
+% L vs. Save
+NuvLTab = f.Children(length(f.Children)-1).Children(4);
+NuvLAxes = NuvLTab.Children;
+hNuLDot = NuvLAxes.Children(1);
+hNuLDot.XData = sum(Ss)/n;
+hNuLDot.YData = Lj;
+hNuLPlot = NuvLAxes.Children(2);
+hNuLPlot.XData = Stots/n;
+hNuLPlot.YData = Ls;
