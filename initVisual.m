@@ -6,6 +6,7 @@ hold on;
 for i = 1:4*m*n
     fill3(1,1,1,'g');
 end
+alpha(0.3);
 grid on
 axis equal
 xlim manual
@@ -14,6 +15,7 @@ zlim manual
 xlabel('X');
 ylabel('Y');
 zlabel('Z');
-view(60,30)
+view([42 23]);
 set(gcf,'color','w');
-set(gca,'FontSize',18)
+set(gca,'FontSize',16)
+set(gca,'Fontname','Tacoma')
