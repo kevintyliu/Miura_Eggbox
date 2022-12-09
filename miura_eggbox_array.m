@@ -19,30 +19,30 @@ clc
 % params.gs = deg2rad([60 60]);
 
 % % Some hybrid
-% params.m = 3;
-% params.n = 4;
-% params.a = 1;
-% params.miura_bools = [true true false true];
-% params.bs = [1 2 2 1];
-% params.gs = deg2rad([40 50 60 50]);
-
-% MVMVMVMV Zero Poisson
-params.m = 3;
-params.n = 6;
+params.m = 4;
+params.n = 5;
 params.a = 1;
-params.miura_bools = repmat([true false],1,params.n/2);
-params.bs = repmat([0.76 0.68],1,params.n/2);
-params.gs = deg2rad(76.5)*ones(1,params.n);
+params.miura_bools = [true true false true false];
+params.bs = [1 2 0.75 1 0.5];
+params.gs = deg2rad([40 50 60 50 65]);
+
+% % MVMVMVMV Zero Poisson
+% params.m = 3;
+% params.n = 6;
+% params.a = 1;
+% params.miura_bools = repmat([true false],1,params.n/2);
+% params.bs = repmat([0.76 0.68],1,params.n/2);
+% params.gs = deg2rad(76.5)*ones(1,params.n);
 
 % MVMVMVMV 2 to 1
-params.m = 3;
-params.n = 6;
-params.a = 1.5;
-params.miura_bools = repmat([true false],1,params.n/2);
-params.bs = repmat([2.09 1.11],1,params.n/2);
-params.gs = repmat(deg2rad([75 64.5]),1,params.n/2);
+% params.m = 3;
+% params.n = 6;
+% params.a = 1.5;
+% params.miura_bools = repmat([true false],1,params.n/2);
+% params.bs = repmat([2.09 1.11],1,params.n/2);
+% params.gs = repmat(deg2rad([75 64.5]),1,params.n/2);
 
-% % MMMMVVVV
+% % MMMMEEEE
 % params.m = 4;
 % params.n = 8;
 % params.a = 1;
@@ -60,18 +60,18 @@ params.gs = repmat(deg2rad([75 64.5]),1,params.n/2);
 
 params.psimin = max([0 pi/2 - min(params.gs(~params.miura_bools))]);
 params.psimax = min([params.gs(params.miura_bools) pi/2]);
-% params.psi = 3/4*params.psimin + 1/4*params.psimax;
-params.psi = params.psimin;
+params.psi = 3/4*params.psimin + 1/4*params.psimax;
+% params.psi = params.psimin;
 % params.psi = params.psimax;
 if params.psimax <= params.psimin
     error('Incompatibility');
 end
 %% Create GUI
-f = initVisual(params.m,params.n);
+f = initVisual(params.m,params.n,params.miura_bools);
 f.UserData = params;
 initArrayTabs(f)
 plotArray(f);
-plotPoisson = true;
+plotPoisson = false;
 if plotPoisson  % Plot static initial configuration
     zshift = 3;
     for i = 1:length(f.Children(length(f.Children)).Children)

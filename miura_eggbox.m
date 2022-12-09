@@ -3,10 +3,16 @@ close all
 clear
 clc
 
-params.a = 1;   % a between eggbox and Miura match
-params.bm = 1;
-params.be = 1;
-params.gm = deg2rad(60);
+% params.a = 1;   % a between eggbox and Miura match
+% params.bm = 1;
+% params.be = 1;
+% params.gm = deg2rad(60);
+% params.ge = deg2rad(60);
+% params.psi = deg2rad(45);
+params.a = 1.75;   % Mode locking
+params.bm = 2.22;
+params.be = 1.16;
+params.gm = deg2rad(66.1);
 params.ge = deg2rad(60);
 params.psi = deg2rad(45);
 % params.a = 1.07;   % a between eggbox and Miura match
@@ -17,7 +23,7 @@ params.psi = deg2rad(45);
 % params.psi = deg2rad(23.24);
 params.MaxInterShift = 0; % TODO: Delete
 %% Create GUI
-f = initVisual(1,2);
+f = initVisual(1,2,[true false]);
 initMiuraEggTabs(f)
 f.UserData = params;
 plotMiuraEgg(f);

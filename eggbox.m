@@ -11,7 +11,7 @@ eggParams.g = deg2rad(60);
 eggParams.psi = deg2rad(45);
 % eggParams.psi = pi/2-eggParams.g;
 %% Create GUI
-f = initVisual(1,2);
+f = initVisual(1,1,false);
 initSingleUnitTabs(f);
 f.UserData = eggParams;
 plotEgg(f);
