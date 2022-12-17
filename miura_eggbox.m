@@ -8,13 +8,32 @@ clc
 % params.be = 1;
 % params.gm = deg2rad(60);
 % params.ge = deg2rad(60);
-% params.psi = deg2rad(45);
-params.a = 1.75;   % Mode locking
-params.bm = 2.22;
-params.be = 1.16;
-params.gm = deg2rad(66.1);
+% params.psi = deg2rad(40);
+% params.be = 0.5;
+% scalefact = 3/params.be;
+% params.a = 9.6/scalefact;   % my tube
+% params.bm = 9.6/scalefact;
+% params.gm = deg2rad(75);
+% params.ge = deg2rad(30);
+% params.psi = deg2rad(62);
+% params.psi = deg2rad(74.5);
+
+
+params.be = 0.5;
+scalefact = 1.9/params.be;
+params.a = 8.5/scalefact;   % my tube
+params.bm = 9.6/scalefact;
+params.gm = deg2rad(75);
 params.ge = deg2rad(60);
-params.psi = deg2rad(45);
+params.psi = deg2rad(40);
+% params.psi = deg2rad(74.5);
+
+% params.a = 1.75;   % Mode locking
+% params.bm = 2.22;
+% params.be = 1.16;
+% params.gm = deg2rad(66.1);
+% params.ge = deg2rad(60);
+% params.psi = deg2rad(45);
 % params.a = 1.07;   % a between eggbox and Miura match
 % params.bm = 1.56;
 % params.be = 0.63;
