@@ -5,6 +5,7 @@ hae = a*cos(alphae);
 hbe = be*cos(betae);
 He = hae+hbe;
 Se = be*sqrt(1-cos(ge)^2/cos(alphae)^2);    % instead of B
+% Spsi = be*sqrt(sin(psi)^2-cos(ge)^2)/sin(psi);
 Le = a*sin(alphae);                       % instead of W
 
 Xes = [Se 2*Se 0 Se 2*Se 0 Se 2*Se 0]';

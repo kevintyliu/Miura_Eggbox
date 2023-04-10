@@ -1,4 +1,5 @@
 function plotMiuraEgg(f)
+% plots a single Miura and Eggbox
 nplot = 301;
 a = f.UserData.a;
 bm = f.UserData.bm;
@@ -6,6 +7,8 @@ be = f.UserData.be;
 gm = f.UserData.gm;
 ge = f.UserData.ge;
 psi = f.UserData.psi;
+isTube = f.UserData.isTube;
+isRot = f.UserData.isRot;
 
 % Miura calculations
 [Xms, Yms, Zms, mInds, Sm, L] = getMiuraCoords(a,bm,gm,psi);
@@ -21,36 +24,46 @@ Xs = [Xms; Xes];
 Ys = [Yms; Yes];
 Zs = [Zms; Zes];
 quadInds = [mInds; eInds];
-% nhats = zeros(3,size(quadInds,1));
-
 axes(f.Children(length(f.Children)));
 title(sprintf('$a$: %0.2f, $b_m$: %0.2f, $b_e$: %0.2f, $\\gamma_m$: %0.1f$^\\circ$, $\\gamma_e$: %0.2f$^\\circ$, $\\psi$: %0.1f$^\\circ$',...
     a,bm,be,rad2deg(gm),rad2deg(ge),rad2deg(psi)),'Interpreter','latex');
 xlim([0,2*bm*sin(gm)+2*be*sin(ge)]);
 ylim([0,max([2*a+bm*cos(gm) bm+2*a*cos(gm) 2*a*sin(ge)])]);
-% zlim([0,max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)])]);
-zlim([-max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)]),max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)])]);
+if isTube
+    zlim([-max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)]),max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)])]);
+else
+    zlim([0,max([a+be*cos(ge) be+a*cos(ge) a*sin(gm)])]);
+end
 for i = 1:size(quadInds,1)
-    h = f.Children(length(f.Children)).Children(2*i-1); % for tube
-    h.XData = Xs(quadInds(i,:));
-    h.YData = Ys(quadInds(i,:));
-    h.ZData = Zs(quadInds(i,:));
-    h2 = f.Children(length(f.Children)).Children(2*i);
-    h2.XData = Xs(quadInds(i,:));% for tube
-    h2.YData = Ys(quadInds(i,:));% for tube
-    h2.ZData = -Zs(quadInds(i,:));% for tube
-    if i>4  
-        h3 = f.Children(length(f.Children)).Children(2*size(quadInds,1)+i-4); % for Miura flip
-        h3.XData = Xs(quadInds(i,:));% for tube
-        h3.YData = Ys(quadInds(i,:));% for tube
-        if i == 5 % hacky miura flip thing
-            h3.ZData = [Zs(quadInds(i,1:2)); 2*Zs(quadInds(i,2))-Zs(quadInds(i,3)); -Zs(quadInds(i,4))];
-        elseif i == 6
-            h3.ZData = [-Zs(quadInds(i,1)); 2*Zs(quadInds(i,3))-Zs(quadInds(i,2)); Zs(quadInds(i,3:4))];
-        elseif i == 7
-            h3.ZData = [Zs(quadInds(i,1:2)); -Zs(quadInds(i,3)); 2*Zs(quadInds(i,1))-Zs(quadInds(i,4)); ];
-        elseif i == 8
-            h3.ZData = [2*Zs(quadInds(i,4))-Zs(quadInds(i,1));-Zs(quadInds(i,2));  Zs(quadInds(i,3:4))];
+    if isTube
+        h = f.Children(length(f.Children)).Children(2*i-1); % for tube
+        h.XData = Xs(quadInds(i,:));
+        h.YData = Ys(quadInds(i,:));
+        h.ZData = Zs(quadInds(i,:));
+        h2 = f.Children(length(f.Children)).Children(2*i);
+        h2.XData = Xs(quadInds(i,:));% for tube
+        h2.YData = Ys(quadInds(i,:));% for tube
+        h2.ZData = -Zs(quadInds(i,:));% for tube
+    else
+        h = f.Children(length(f.Children)).Children(i);
+        h.XData = Xs(quadInds(i,:));
+        h.YData = Ys(quadInds(i,:));
+        h.ZData = Zs(quadInds(i,:));
+    end
+    if isTube && isRot
+        if i>4
+            h3 = f.Children(length(f.Children)).Children(2*size(quadInds,1)+i-4); % for Miura flip
+            h3.XData = Xs(quadInds(i,:));% for tube
+            h3.YData = Ys(quadInds(i,:));% for tube
+            if i == 5 % hacky miura flip thing
+                h3.ZData = [Zs(quadInds(i,1:2)); 2*Zs(quadInds(i,2))-Zs(quadInds(i,3)); -Zs(quadInds(i,4))];
+            elseif i == 6
+                h3.ZData = [-Zs(quadInds(i,1)); 2*Zs(quadInds(i,3))-Zs(quadInds(i,2)); Zs(quadInds(i,3:4))];
+            elseif i == 7
+                h3.ZData = [Zs(quadInds(i,1:2)); -Zs(quadInds(i,3)); 2*Zs(quadInds(i,1))-Zs(quadInds(i,4)); ];
+            elseif i == 8
+                h3.ZData = [2*Zs(quadInds(i,4))-Zs(quadInds(i,1));-Zs(quadInds(i,2));  Zs(quadInds(i,3:4))];
+            end
         end
     end
     %     s1 = [Xs(quadInds(i,2))-Xs(quadInds(i,1)); Ys(quadInds(i,2))-Ys(quadInds(i,1)); Zs(quadInds(i,2))-Zs(quadInds(i,1)) ];

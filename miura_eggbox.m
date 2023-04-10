@@ -2,6 +2,8 @@
 close all
 clear
 clc
+params.isTube = true;
+params.isRot = false;
 
 % params.a = 1;   % a between eggbox and Miura match
 % params.bm = 1;
@@ -18,7 +20,6 @@ clc
 % params.psi = deg2rad(62);
 % params.psi = deg2rad(74.5);
 
-
 params.be = 0.5;
 scalefact = 1.9/params.be;
 params.a = 8.5/scalefact;   % my tube
@@ -28,12 +29,12 @@ params.ge = deg2rad(60);
 params.psi = deg2rad(40);
 % params.psi = deg2rad(74.5);
 
-% params.a = 1.75;   % Mode locking
-% params.bm = 2.22;
-% params.be = 1.16;
-% params.gm = deg2rad(66.1);
-% params.ge = deg2rad(60);
-% params.psi = deg2rad(45);
+params.a = 1.75;   % Mode locking
+params.bm = 2.22;
+params.be = 1.16;
+params.gm = deg2rad(66.1);
+params.ge = deg2rad(60);
+params.psi = deg2rad(45);
 % params.a = 1.07;   % a between eggbox and Miura match
 % params.bm = 1.56;
 % params.be = 0.63;
@@ -42,7 +43,7 @@ params.psi = deg2rad(40);
 % params.psi = deg2rad(23.24);
 params.MaxInterShift = 0; % TODO: Delete
 %% Create GUI
-f = initVisual(1,2,[true false]);
+f = initVisual(1,2,[true false],params.isTube,params.isRot);
 initMiuraEggTabs(f)
 f.UserData = params;
 plotMiuraEgg(f);
@@ -73,35 +74,40 @@ plotMiuraEgg(f);
 end
 function changeGm(~,event)
 f = gcf;
+% Adjust saved values
 f.UserData.gm = event.AffectedObject.Value;
-% adjust ge
-f.UserData.ge = max(pi/2-f.UserData.gm,f.UserData.ge);
-f.UserData.geSlider.Value = f.UserData.ge;
+f.UserData.ge = max((pi/2-f.UserData.gm)*1.001,f.UserData.ge); % set limits to be equal if constraint violated
+f.UserData.psi = min(f.UserData.gm,f.UserData.psi);
+% Adjust slider bounds and labels
 f.UserData.geSlider.Min = pi/2-f.UserData.gm;
 f.UserData.geSlider.Position = [0.9-0.8*f.UserData.gm/(pi/2) 0.10 0.8*f.UserData.gm/(pi/2) 0.03];
 f.UserData.geLeftNote.Position = [0.85-0.8*(f.UserData.gm/(pi/2)) 0.10 0.05 0.03];
-% adjust psi
-f.UserData.psiSlider.Max = max(f.UserData.gm,f.UserData.psiSlider.Min*1.001); % to prevent 0 range
-f.UserData.psiSlider.Min = min(pi/2-f.UserData.ge,f.UserData.psiSlider.Max*.999); % to prevent 0 range
-if ~(f.UserData.psiSlider.Min <f.UserData.psi && f.UserData.psi < f.UserData.psiSlider.Max)
-    f.UserData.psi = mean([f.UserData.psiSlider.Min f.UserData.psiSlider.Max]);
-end
-f.UserData.psiSlider.Value = f.UserData.psi;
+f.UserData.psiSlider.Max = f.UserData.gm;
 f.UserData.psiSlider.Position = [0.9-0.8*(f.UserData.ge/(pi/2)) 0.05 0.8*((f.UserData.gm+f.UserData.ge-pi/2)/(pi/2)) 0.03];
 f.UserData.psiLeftNote.Position = [0.85-0.8*(f.UserData.ge/(pi/2)) 0.05 0.05 0.03];
 f.UserData.psiRightNote.Position = [0.9+0.8*(f.UserData.gm-pi/2)/(pi/2) 0.05 0.05 0.03];
+% Adjust slider values with reactions
+f.UserData.geSlider.Value = f.UserData.ge;
+f.UserData.psiSlider.Value = f.UserData.psi;
 % plot
 plotMiuraEgg(f);
 end
 function changeGe(~,event)
 f = gcf;
 f.UserData.ge = event.AffectedObject.Value;
-% adjust psi
-f.UserData.psi = max(pi/2-f.UserData.ge,f.UserData.psi);
+% Adjust saved values
+if pi/2-f.UserData.ge >= f.UserData.psiSlider.Max
+    f.UserData.ge = f.UserData.ge*1.001;
+end
+% Adjust slider bounds and labels
 f.UserData.psiSlider.Min = pi/2-f.UserData.ge;
-f.UserData.psiSlider.Value = max(pi/2-f.UserData.ge,f.UserData.psi);
+if ~(f.UserData.psiSlider.Min <f.UserData.psi && f.UserData.psi < f.UserData.psiSlider.Max)
+    f.UserData.psi = mean([f.UserData.psiSlider.Min f.UserData.psiSlider.Max]);
+end
 f.UserData.psiSlider.Position = [0.9-0.8*(f.UserData.ge/(pi/2)) 0.05 0.8*((f.UserData.gm+f.UserData.ge-pi/2)/(pi/2)) 0.03];
 f.UserData.psiLeftNote.Position = [0.85-0.8*(f.UserData.ge/(pi/2)) 0.05 0.05 0.03];
+% Adjust slider values with reactions
+f.UserData.psiSlider.Value = f.UserData.psi;
 % plot
 plotMiuraEgg(f);
 end
